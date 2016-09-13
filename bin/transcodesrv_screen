@@ -1,6 +1,5 @@
 #!/bin/sh
 
-cd /opt/transcodesrv
 
 screen -dmS transcodesrv -s ./transcodesrv_sh
 
