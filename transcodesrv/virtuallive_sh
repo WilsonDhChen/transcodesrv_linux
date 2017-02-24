@@ -1,0 +1,34 @@
+#!/bin/sh
+
+
+CURDIR=$(pwd)
+export LD_LIBRARY_PATH=$CURDIR:$CURDIR/ffmpeg:/code/unix/libso/Linux:$CURDIR/lib:$CURDIR/qt5:/usr/local/lib:$LD_LIBRARY_PATH
+export PATH=$PATH:$CURDIR:$CURDIR/ffmpeg:$CURDIR/bin
+
+CHANNEL_ID=dell
+MEDIASRV_ADDR=192.168.88.1:2935
+MEDIASRV_URL="rtmp://$MEDIASRV_ADDR/live/$CHANNEL_ID?type=vir live=1"
+#ffmpeg2.5.4
+#ENCODER_PAR="-vcodec libx264   -r 25 -s 720x576 -acodec libvo_aacenc -ar 48000"
+
+#ffmpeg3.0 libfdk_aac support
+NCODER_PAR="-vcodec libx264   -r 25 -s 720x576 -acodec libfdk_aac -ar 48000"
+#下面的是ts文件参数，不编码
+#ENCODER_PAR="-vcodec copy -acodec copy  -bsf:a  aac_adtstoasc"
+
+#echo $MEDIASRV_URL
+chmod 777 ./bin/ffmpeg
+
+
+#循环里面可以放多个不同的文件
+#所有的视频文件需要有相同压缩参数，音频和视频
+#视频必须是H264 ,音频必须是AAC,如果不是就需要改ffmpeg的参数，边转码边直播
+
+while [ 1 ]
+do
+
+    
+    ffmpeg  -loglevel 16 -re -y -i "/mnt/hgfs/D/video/xdl.flv" $ENCODER_PAR  -f flv   "$MEDIASRV_URL" 
+    ffmpeg -loglevel 16  -re -y -i "/mnt/hgfs/D/video/hd.mp4" $ENCODER_PAR  -f flv   "$MEDIASRV_URL" 
+    ffmpeg -loglevel 16  -re -y -i "/mnt/hgfs/D/video/m4v.m4v" $ENCODER_PAR  -f flv   "$MEDIASRV_URL" 
+done
