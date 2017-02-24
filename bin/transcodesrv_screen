@@ -1,5 +1,0 @@
-#!/bin/sh
-
-
-screen -dmS transcodesrv -s ./transcodesrv_sh
-
